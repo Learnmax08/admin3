@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusPlatform - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .admin-card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+        }
+        .table {
+            color: #ffffff;
+            vertical-align: middle;
+        }
+        .table th {
+            border-bottom: 2px solid #30363d;
+            background-color: #1f242c;
+        }
+        .table td {
+            border-bottom: 1px solid #21262d;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container my-5">
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-user-shield fs-2 text-info me-3"></i>
+                <div>
+                    <h2 class="fw-bold mb-0">Admin Quest Control</h2>
+                    <small class="text-muted">Manage student course unlock requests</small>
+                </div>
+            </div>
+            <span class="badge bg-dark text-info border border-info p-2" id="total_requests">Requests: 0</span>
+        </div>
+
+        <div class="card admin-card shadow-sm">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Requested Course</th>
+                                <th>Requested Date & Time</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requests_table_body">
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="spinner-border text-info" role="status"></div>
+                                    <div class="mt-2 text-muted">Loading requests...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.cmwithmn.lk/web-data/Static/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3Cz8fK3xKnqfxVIKVkiipWjXsplypsJg",
+            authDomain: "nexus-8b5ab.firebaseapp.com",
+            projectId: "nexus-8b5ab",
+            storageBucket: "nexus-8b5ab.firebasestorage.app",
+            messagingSenderId: "369886966911",
+            appId: "1:369886966911:web:c3ccdcb3f75370c984bb4a",
+            measurementId: "G-BCYFFBXC1V"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Realtime Listener to Fetch Requests
+        database.ref('unlock_requests').on('value', (snapshot) => {
+            const tableBody = document.getElementById('requests_table_body');
+            const totalBadge = document.getElementById('total_requests');
+            
+            if (!snapshot.exists()) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No requests found in database.</td></tr>`;
+                totalBadge.innerText = "Requests: 0";
+                return;
+            }
+
+            let rowsHtml = '';
+            let count = 0;
+
+            // Requests reverse chronological order
+            const requests = [];
+            snapshot.forEach((childSnapshot) => {
+                requests.unshift({
+                    key: childSnapshot.key,
+                    data: childSnapshot.val()
+                });
+                count++;
+            });
+
+            totalBadge.innerText = `Requests: ${count}`;
+
+            requests.forEach((item) => {
+                const key = item.key;
+                const data = item.data;
+
+                // Status Badge Setup
+                let statusBadge = '';
+                let actionButtons = '';
+
+                if (data.status === "Pending") {
+                    statusBadge = `<span class="badge bg-warning text-dark status-badge">PENDING</span>`;
+                    actionButtons = `
+                        <button onclick="updateStatus('${key}', 'Approved')" class="btn btn-success btn-sm me-2 rounded-2"><i class="fa-solid fa-check me-1"></i> Approve</button>
+                        <button onclick="updateStatus('${key}', 'Rejected')" class="btn btn-danger btn-sm me-2 rounded-2"><i class="fa-solid fa-xmark me-1"></i> Reject</button>
+                    `;
+                } else if (data.status === "Approved" || data.status === "approved") {
+                    statusBadge = `<span class="badge bg-success status-badge">APPROVED</span>`;
+                    actionButtons = `<button onclick="updateStatus('${key}', 'Pending')" class="btn btn-outline-secondary btn-sm me-2 rounded-2"><i class="fa-solid fa-rotate-left me-1"></i> Revert to Pending</button>`;
+                } else {
+                    statusBadge = `<span class="badge bg-danger status-badge">REJECTED</span>`;
+                    actionButtons = `<button onclick="updateStatus('${key}', 'Pending')" class="btn btn-outline-secondary btn-sm me-2 rounded-2"><i class="fa-solid fa-rotate-left me-1"></i> Revert to Pending</button>`;
+                }
+
+                // 🗑️ Fast Direct Delete Button
+                actionButtons += `<button onclick="deleteRequest('${key}')" class="btn btn-outline-danger btn-sm rounded-2" title="Delete Request"><i class="fa-solid fa-trash-can"></i></button>`;
+
+                rowsHtml += `
+                    <tr>
+                        <td class="fw-semibold text-info">${data.studentName || 'Unknown'}</td>
+                        <td><span class="badge bg-dark border border-secondary text-white p-2 px-3">${data.requestedClass}</span></td>
+                        <td class="small text-muted">${data.timestamp || 'N/A'}</td>
+                        <td class="text-center">${statusBadge}</td>
+                        <td class="text-end">${actionButtons}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = rowsHtml;
+        });
+
+        // Function to update status in Firebase
+        function updateStatus(requestKey, newStatus) {
+            let actionText = '';
+            let confirmColor = '';
+
+            if (newStatus === 'Approved') {
+                actionText = 'Approve කරන්නද?';
+                confirmColor = '#00e676';
+            } else if (newStatus === 'Rejected') {
+                actionText = 'Reject කරන්නද?';
+                confirmColor = '#d33';
+            } else if (newStatus === 'Pending') {
+                actionText = 'නැවතත් Pending තත්වයට පත් කරන්නද?';
+                confirmColor = '#f1c40f';
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `මෙම ඉල්ලීම ${actionText}`,
+                icon: 'warning',
+                showCancelButton: true,
+                background: '#161b22',
+                color: '#ffffff',
+                confirmButtonColor: confirmColor,
+                cancelButtonColor: '#30363d',
+                confirmButtonText: `Yes, ${newStatus}`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    database.ref(`unlock_requests/${requestKey}`).update({
+                        status: newStatus
+                    }).then(() => {
+                        Swal.fire({
+                            title: 'Updated!',
+                            text: `Status එක සාර්ථකව ${newStatus} ලෙස වෙනස් කලා!`,
+                            icon: 'success',
+                            background: '#161b22',
+                            color: '#ffffff',
+                            confirmButtonColor: '#00d2ff'
+                        });
+                    }).catch((error) => {
+                        Swal.fire('Error', error.message, 'error');
+                    });
+                }
+            });
+        }
+
+        // 🛠️ Firebase එකෙන් Request එක සදහටම Direct Delete කරලා දාන Function එක (No Alerts)
+        function deleteRequest(requestKey) {
+            database.ref(`unlock_requests/${requestKey}`).remove()
+            .catch((error) => {
+                console.error("Delete failed: ", error.message);
+            });
+        }
+    </script>
+</body>
+</html>
