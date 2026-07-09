@@ -1,780 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexusPlatform | Admin Control Core</title>
-    
-    <link rel="stylesheet" href="https://cdn.cmwithmn.lk/web-data/Static/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.cmwithmn.lk/web-data/Static/assets/fonts/all.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800&display=swap">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <title>A/L Combined Maths Graph Bot</title>
     <style>
         body {
-            background-color: #0b0e14 !important;
-            color: #c9d1d9 !important;
-            font-family: 'Nunito', sans-serif;
-            min-height: 100vh;
-            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        .admin-card {
-            background: rgba(22, 27, 34, 0.85) !important;
-            border: 1px solid #30363d !important;
-            border-radius: 20px !important;
-            padding: 30px;
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.15) !important;
-            backdrop-filter: blur(15px);
-            border-top: 3px solid #ff3d00 !important;
+        header {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        .brand-title {
-            color: #ffffff;
-            font-weight: 800;
-            text-shadow: 0 0 10px rgba(255, 61, 0, 0.4);
+        h1 {
+            margin: 0;
+            font-size: 24px;
         }
-
-        .nav-tabs {
-            border-bottom: 1px solid #30363d !important;
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 30px auto;
+            text-align: center;
+        }
+        .btn-container {
             margin-bottom: 20px;
         }
-        
-        .nav-link {
-            color: #8b949e !important;
-            font-weight: 700;
-            text-transform: uppercase;
-            border: none !important;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link.active {
-            background: transparent !important;
-            color: #00d2ff !important;
-            border-bottom: 3px solid #00d2ff !important;
-            text-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
-        }
-
-        .table {
-            color: #c9d1d9 !important;
-            background-color: #0d1117 !important;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .table th {
-            background-color: #161b22 !important;
-            border-color: #30363d !important;
-            color: #00d2ff;
-        }
-
-        .table td {
-            border-color: #30363d !important;
-            background-color: #0d1117 !important;
-            vertical-align: middle;
-        }
-
-        .badge-pending {
-            background-color: #ff9100;
-            color: #0d1117;
-            font-weight: 700;
-        }
-
-        .badge-approved {
-            background-color: #00e676;
-            color: #0d1117;
-            font-weight: 700;
-        }
-
-        .btn-approve {
-            background: #00e676;
-            color: #0d1117;
-            font-weight: bold;
-            border: none;
-        }
-        .btn-approve:hover { background: #00b357; color: #fff; }
-
-        .btn-reject {
-            background: #ff3d00;
+        .btn {
+            background-color: #28a745;
             color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
             font-weight: bold;
-            border: none;
+            transition: background 0.3s;
+            display: inline-block;
         }
-        .btn-reject:hover { background: #b32a00; }
-
-        .btn-view {
-            background: #00d2ff;
-            color: #0d1117;
-            font-weight: bold;
-            border: none;
+        .btn:hover {
+            background-color: #218838;
         }
-        .btn-view:hover { background: #00a4cc; color: #fff; }
-
-        .form-control, .form-control:focus, .form-select, .form-select:focus {
-            background-color: #0d1117 !important;
-            border: 1px solid #30363d !important;
-            color: #ffffff !important;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #00d2ff !important;
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2) !important;
-        }
-
-        .user-result-box {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-
-        /* Live Controller Custom CSS */
-        .btn-update {
-            background: linear-gradient(135deg, #0070f3, #0066ff);
-            color: #fff !important;
-            font-weight: 700;
-            border: none;
-            padding: 12px;
+        .iframe-container {
+            border: 2px solid #ddd;
             border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        iframe {
             width: 100%;
-            transition: transform 0.2s;
+            height: 600px;
+            border: none;
         }
-        .btn-update:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 112, 243, 0.4);
-        }
-        .lecture-controller-box {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 16px;
-            padding: 30px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        /* Broadcast Card Custom Style */
-        .broadcast-box {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 20px;
+        footer {
+            margin-top: 40px;
+            color: #777;
+            font-size: 14px;
+            padding-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
+    <header>
+        <h1>A/L Combined Mathematics Graph Assistant</h1>
+    </header>
+
     <div class="container">
-        <div class="admin-card">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="brand-title"><i class="fa-solid fa-user-shield me-2"></i>Nexus Control Core</h3>
-                <div>
-                    <span class="badge bg-warning text-dark me-2" id="pending-count">Pending: 0</span>
-                    <span class="badge bg-success" id="approved-count">Approved: 0</span>
-                </div>
-            </div>
+        <p>ප්‍රස්තාරය ඇඳගැනීම සඳහා පහත ඇති Bot සමඟ Chat කරන්න. (Poe එකෙන් Embed කිරීම Block කර ඇත්නම් බටන් එක ක්ලික් කරන්න)</p>
+        
+        <div class="btn-container">
+            <a href="https://poe.com/botnexus12" target="_blank" class="btn">Open Bot in Full Screen</a>
+        </div>
 
-            <ul class="nav nav-tabs" id="adminTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending-panel" type="button" role="tab">Pending Requests</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved-panel" type="button" role="tab">Approved Users</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="dm-tab" data-bs-toggle="tab" data-bs-target="#dm-panel" type="button" role="tab"><i class="fa-solid fa-envelope me-1"></i> DM & Course Access</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="live-tab" data-bs-toggle="tab" data-bs-target="#live-panel" type="button" role="tab"><i class="fa-solid fa-tower-broadcast me-1"></i> Live Controller</button>
-                </li>
-            </ul>
-
-            <div class="tab-content" id="adminTabsContent">
-                
-                <div class="tab-pane fade show active" id="pending-panel" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Full Name</th>
-                                    <th>Email Address</th>
-                                    <th>Submitted Request</th>
-                                    <th>Registered Date</th>
-                                    <th class="text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pending-table-body">
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">Loading pending data...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="approved-panel" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Full Name</th>
-                                    <th>Email Address</th>
-                                    <th>Status</th>
-                                    <th>Registered Date</th>
-                                    <th class="text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="approved-table-body">
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">Loading approved data...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="dm-panel" role="tabpanel">
-                    <div class="row justify-content-center">
-                        
-                        <div class="col-md-8 mb-4">
-                            <h5 class="text-warning mb-3"><i class="fa-solid fa-bullhorn me-1"></i> Broadcast & Messaging Control</h5>
-                            <div class="broadcast-box p-4" style="background: #161b22; border: 1px solid #30363d; border-radius: 6px;">
-                                <form id="notificationForm">
-                                    <div class="mb-3">
-                                        <label class="form-label text-white fw-semibold">Target User (කාටද යවන්නේ?)</label>
-                                        <select class="form-select mb-3" id="targetType">
-                                            <option value="all">සියලුම දෙනාට (All Players)</option>
-                                            <option value="multiple">පරිශීලකයන් තෝරාගෙන යවන්න (Select Users)</option>
-                                            <option value="specific">තනි පරිශීලකයෙකුට රහසිගතව (Private / Specific UID)</option>
-                                        </select>
-
-                                        <div id="userSelectionContainer" class="d-none border border-secondary rounded p-3 mb-3" style="max-height: 200px; overflow-y: auto; background: #0d1117;">
-                                            <label class="form-label text-info fw-bold mb-2">පරිශීලකයන් තෝරන්න (Select UIDs):</label>
-                                            <div id="userCheckboxList">
-                                                <small class="text-muted"><i class="fa-solid fa-spinner fa-spin me-1"></i> Loading users...</small>
-                                            </div>
-                                        </div>
-
-                                        <div id="privateUserContainer" class="d-none mb-3">
-                                            <input type="text" class="form-control" id="targetUid" placeholder="Enter Student UID (e.g., CM000000)">
-                                        </div>
-                                    </div>
-                        
-                                    <div class="mb-3">
-                                        <label class="form-label text-white fw-semibold">Alert Type (පණිවිඩයේ ස්වභාවය)</label>
-                                        <select class="form-select" id="notifType">
-                                            <option value="info">ℹ️ Info (සාමාන්‍ය දැනුම්දීමක්)</option>
-                                            <option value="warning">⚠️ Warning (අවවාදාත්මක දැනුම්දීමක්)</option>
-                                            <option value="success">✅ Success (සුභ පැතුමක් / ජයග්‍රහණයක්)</option>
-                                            <option value="error">🚨 Danger/Alert (හදිසි නිවේදනයක්)</option>
-                                        </select>
-                                    </div>
-                        
-                                    <div class="mb-3">
-                                        <label class="form-label text-white fw-semibold">Message (පණිවිඩය)</label>
-                                        <textarea class="form-control" id="notifMessage" rows="4" placeholder="Type your system announcement here..." required></textarea>
-                                    </div>
-                        
-                                    <button type="submit" class="btn btn-info text-dark fw-bold w-100 py-2" id="submitBtn">
-                                        <i class="fa-solid fa-paper-plane me-2"></i> SEND NOTIFICATION
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="live-panel" role="tabpanel">
-                    <div class="lecture-controller-box">
-                        <div class="text-center mb-4">
-                            <div style="width: 60px; height: 60px; background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                                <i class="fa-solid fa-user-shield" style="color: #00d2ff; font-size: 1.5rem;"></i>
-                            </div>
-                            <h4 class="text-white fw-bold mb-1">Live Lecture Controller</h4>
-                            <p class="text-muted small">මෙතැනින් සජීවී පන්තියේ ලින්ක් එක සහ රහස් පදය යාවත්කාලීන කරන්න.</p>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label text-white-50 small fw-bold">LIVE LINK (ZOOM / YOUTUBE)</label>
-                            <input type="text" id="admin-link-input" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label text-white-50 small fw-bold">CLASS PASSWORD</label>
-                            <input type="text" id="admin-pass-input" class="form-control" placeholder="උදා: 20080716">
-                        </div>
-
-                        <button onclick="updateClassDetails()" class="btn btn-update">
-                            <i class="fa-solid fa-cloud-arrow-up me-2"></i>UPDATE LIVE CLASS
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+        <div class="iframe-container">
+            <iframe src="https://poe.com/botnexus12"></iframe>
         </div>
     </div>
 
-    <script src="https://cdn.cmwithmn.lk/web-data/Static/assets/bootstrap/js/bootstrap.min.js"></script>
+    <footer>
+        <p>Created for A/L Combined Maths Students</p>
+    </footer>
 
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            if(localStorage.getItem('nexus_live_link')) {
-                document.getElementById('admin-link-input').value = localStorage.getItem('nexus_live_link');
-            }
-            if(localStorage.getItem('nexus_live_pass')) {
-                document.getElementById('admin-pass-input').value = localStorage.getItem('nexus_live_pass');
-            }
-        });
-
-        function updateClassDetails() {
-            const linkVal = document.getElementById('admin-link-input').value.trim();
-            const passVal = document.getElementById('admin-pass-input').value.trim();
-
-            if(!linkVal || !passVal) {
-                Swal.fire({ title: 'Info', text: 'කරුණාකර ලින්ක් එක සහ පස්වර්ඩ් එක යන දෙකම ඇතුළත් කරන්න!', icon: 'info', background: '#161b22', color: '#ffffff' });
-                return;
-            }
-
-            localStorage.setItem('nexus_live_link', linkVal);
-            localStorage.setItem('nexus_live_pass', passVal);
-
-            Swal.fire({ title: 'Success!', text: 'සජීවී පන්තියේ දත්ත සාර්ථකව යාවත්කාලීන කරන ලදී! දැන් සිසුන්ට පන්තියට සම්බන්ධ විය හැක.', icon: 'success', background: '#161b22', color: '#ffffff' });
-        }
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDocs, arrayUnion, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCmciwmEbSDgA5PhCY12a_vKqXl4GDBeZ8",
-            authDomain: "school-project-5fe93.firebaseapp.com",
-            projectId: "school-project-5fe93",
-            storageBucket: "school-project-5fe93.firebasestorage.app",
-            messagingSenderId: "548925209782",
-            appId: "1:548925209782:web:cea0aac7d41a510b2fba17",
-            measurementId: "G-5MG8T54708"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const BIN_ID = "6a41e29af5f4af5e293f69ec";
-        const JSONBIN_API_KEY = "$2a$10$5lpjQyhvUtMFr2g1ZCdBGetjHt8s.eg4FpoUw7NR7c.o85KSVrg8u";
-
-        const pendingTableBody = document.getElementById('pending-table-body');
-        const approvedTableBody = document.getElementById('approved-table-body');
-        const pendingCountBadge = document.getElementById('pending-count');
-        const approvedCountBadge = document.getElementById('approved-count');
-
-        let pendingUsersData = {};
-
-        // --- 1. REALTIME FETCH PENDING USERS (Firebase) ---
-        const qPending = query(collection(db, "users"), where("status", "==", "pending"));
-        onSnapshot(qPending, (snapshot) => {
-            pendingTableBody.innerHTML = "";
-            pendingUsersData = {};
-            let count = 0;
-
-            if (snapshot.empty) {
-                pendingTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Approve කිරීමට නව පරිශීලකයන් කිසිවෙකු නොමැත.</td></tr>`;
-                pendingCountBadge.innerText = "Pending: 0";
-                return;
-            }
-
-            snapshot.forEach((docSnap) => {
-                const user = docSnap.data();
-                const uid = user.uid || docSnap.id;
-                pendingUsersData[uid] = user;
-                count++;
-                const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
-
-                const row = `
-                    <tr>
-                        <td><strong>${user.name}</strong></td>
-                        <td>${user.email}</td>
-                        <td>
-                            <button class="btn btn-sm btn-view action-view-request" data-id="${uid}">
-                                <i class="fa-solid fa-eye me-1"></i> View Request
-                            </button>
-                        </td>
-                        <td>${date}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-approve me-2 action-approve" data-id="${uid}">
-                                <i class="fa-solid fa-check me-1"></i> Approve
-                            </button>
-                            <button class="btn btn-sm btn-reject action-reject" data-id="${uid}">
-                                <i class="fa-solid fa-trash me-1"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                pendingTableBody.innerHTML += row;
-            });
-
-            pendingCountBadge.innerText = `Pending: ${count}`;
-            setupActionListeners();
-        });
-
-        // --- 2. REALTIME FETCH APPROVED USERS (Firebase) ---
-        const qApproved = query(collection(db, "users"), where("status", "==", "approved"));
-        onSnapshot(qApproved, (snapshot) => {
-            approvedTableBody.innerHTML = "";
-            let count = 0;
-
-            if (snapshot.empty) {
-                approvedTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">දැනට අනුමත කළ පරිශීලකයන් කිසිවෙකු නොමැත.</td></tr>`;
-                approvedCountBadge.innerText = "Approved: 0";
-                return;
-            }
-
-            snapshot.forEach((docSnap) => {
-                const user = docSnap.data();
-                const uid = user.uid || docSnap.id;
-                count++;
-                const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
-
-                const row = `
-                    <tr>
-                        <td><strong>${user.name}</strong></td>
-                        <td>${user.email}</td>
-                        <td><span class="badge badge-approved"><i class="fa-solid fa-circle-check me-1"></i>Approved</span></td>
-                        <td>${date}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-info me-2 action-view-uid" data-id="${uid}">
-                                <i class="fa-solid fa-id-card me-1"></i> View UID
-                            </button>
-                            <button class="btn btn-sm btn-reject action-reject" data-id="${uid}">
-                                <i class="fa-solid fa-user-minus me-1"></i> Remove User
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                approvedTableBody.innerHTML += row;
-            });
-
-            approvedCountBadge.innerText = `Approved: ${count}`;
-            setupActionListeners();
-        });
-
-        function setupActionListeners() {
-            document.querySelectorAll('.action-view-request').forEach(btn => {
-                btn.replaceWith(btn.cloneNode(true));
-            });
-            document.querySelectorAll('.action-view-request').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const uid = e.target.closest('button').dataset.id;
-                    showRequestPopup(uid);
-                });
-            });
-
-            document.querySelectorAll('.action-approve').forEach(btn => {
-                btn.replaceWith(btn.cloneNode(true));
-            });
-            document.querySelectorAll('.action-approve').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const uid = e.target.closest('button').dataset.id;
-                    approveUser(uid);
-                });
-            });
-
-            document.querySelectorAll('.action-reject').forEach(btn => {
-                btn.replaceWith(btn.cloneNode(true));
-            });
-            document.querySelectorAll('.action-reject').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const uid = e.target.closest('button').dataset.id;
-                    rejectUser(uid);
-                });
-            });
-
-            document.querySelectorAll('.action-view-uid').forEach(btn => {
-                btn.replaceWith(btn.cloneNode(true));
-            });
-            document.querySelectorAll('.action-view-uid').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const uid = e.target.closest('button').dataset.id;
-                    Swal.fire({
-                        title: 'User Unique ID (UID)',
-                        html: `
-                            <div class="p-3 rounded font-monospace text-center" style="background: #0d1117; border: 1px solid #30363d; color: #00d2ff; font-size: 1.2rem;">
-                                ${uid}
-                            </div>
-                            <p class="text-muted small mt-2">මෙම UID එක ක්ලික් කර පහසුවෙන් Copy කරගත හැක.</p>
-                        `,
-                        showConfirmButton: true,
-                        confirmButtonText: 'Copy UID',
-                        confirmButtonColor: '#00d2ff',
-                        background: '#161b22',
-                        color: '#ffffff'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            navigator.clipboard.writeText(uid);
-                            Swal.fire({ title: 'Copied!', text: 'UID එක සාර්ථකව Copy කරගන්නා ලදී.', icon: 'success', timer: 1500, showConfirmButton: false, background: '#161b22', color: '#ffffff' });
-                        }
-                    });
-                });
-            });
-        }
-
-        function showRequestPopup(uid) {
-            const user = pendingUsersData[uid];
-            if (!user) return;
-
-            const details = user.requestDetails || "විස්තර කිසිවක් ඇතුළත් කර නොමැත.";
-            
-            let imageHtml = "";
-            if (user.receiptUrl) {
-                imageHtml = `<div class="mt-3"><img src="${user.receiptUrl}" alt="Receipt" class="img-fluid rounded border border-secondary" style="max-height: 300px;"></div>`;
-            }
-
-            Swal.fire({
-                title: `<span style="color: #00d2ff;">Request Verification</span>`,
-                html: `
-                    <div class="text-start" style="font-size: 0.95rem;">
-                        <p><strong>Name:</strong> ${user.name}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p class="mb-2"><strong>Submitted Request/Message:</strong></p>
-                        <div class="p-3 rounded" style="background: #0d1117; border: 1px solid #30363d; white-space: pre-wrap;">${details}</div>
-                        ${imageHtml}
-                    </div>
-                `,
-                showCancelButton: true,
-                showDenyButton: true,
-                confirmButtonColor: '#00e676',
-                denyButtonColor: '#ff3d00',
-                cancelButtonColor: '#30363d',
-                confirmButtonText: '<i class="fa-solid fa-check"></i> Approve Now',
-                denyButtonText: '<i class="fa-solid fa-trash"></i> Delete Request',
-                cancelButtonText: 'Close',
-                background: '#161b22',
-                color: '#ffffff'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    approveUser(uid);
-                } else if (result.isDenied) {
-                    rejectUser(uid);
-                }
-            });
-        }
-
-        async function sendJsonBinNotification(targetUid, messageText, alertType) {
-            const payload = {
-                id: "notif_" + Date.now(),
-                userId: targetUid,
-                message: messageText,
-                type: alertType,
-                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-            };
-
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: 'PUT',
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Master-Key": JSONBIN_API_KEY
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                throw new Error("JSONBin payload upload failed");
-            }
-            return true;
-        }
-
-        async function approveUser(uid) {
-            const { value: alertMessage } = await Swal.fire({
-                title: 'Approve User & Send Alert',
-                text: 'පරිශීලකයාගේ Screen එක මත දිස්වීමට අවශ්‍ය ක්ෂණික පණිවිඩය (Alert Message) ඇතුළත් කරන්න:',
-                input: 'text',
-                inputValue: 'ඔබගේ ගිණුම සාර්ථකව සක්‍රීය කරන ලදී!',
-                inputPlaceholder: 'ඔබගේ ගිණුම සාර්ථකව සක්‍රීය කරන ලදී!',
-                showCancelButton: true,
-                confirmButtonColor: '#00e676',
-                cancelButtonColor: '#30363d',
-                background: '#161b22', 
-                color: '#ffffff',
-                inputValidator: (value) => {
-                    if (!value) { return 'කරුණාකර පණිවිඩයක් ඇතුළත් කරන්න!'; }
-                }
-            });
-
-            if (alertMessage) {
-                try {
-                    await updateDoc(doc(db, "users", uid), { status: "approved" });
-                    await sendJsonBinNotification(uid, alertMessage, "success");
-                    Swal.fire({ title: 'Approved & Alert Sent!', text: 'පරිශීලකයා අනුමත කර JSONBin Live Alert එක සාර්ථකව යවන ලදී.', icon: 'success', background: '#161b22', color: '#ffffff' });
-                } catch (error) {
-                    Swal.fire({ title: 'Error', text: 'දත්ත යාවත්කාලීන කිරීමේදී දෝෂයක් සිදු විය.', icon: 'error', background: '#161b22', color: '#ffffff' });
-                }
-            }
-        }
-
-        async function rejectUser(uid) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "මෙම පරිශීලකයාව පද්ධතියෙන් සම්පූර්ණයෙන්ම ඉවත් කිරීමට අවශ්‍යද?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ff3d00',
-                cancelButtonColor: '#30363d',
-                confirmButtonText: 'Yes, Delete!',
-                background: '#161b22', color: '#ffffff'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        await deleteDoc(doc(db, "users", uid));
-                        Swal.fire({ title: 'Deleted!', text: 'පරිශීලකයා සාර්ථකව ඉවත් කරන ලදී.', icon: 'success', background: '#161b22', color: '#ffffff' });
-                    } catch (error) {
-                        Swal.fire({ title: 'Error', text: 'ඉවත් කිරීමට නොහැකි විය.', icon: 'error', background: '#161b22', color: '#ffffff' });
-                    }
-                }
-            });
-        }
-
-
-        // --- 🚀 NEW MODIFIED NOTIFICATION BROADCAST ENGINE ---
-        const targetTypeSelect = document.getElementById('targetType');
-        const userSelectionContainer = document.getElementById('userSelectionContainer');
-        const privateUserContainer = document.getElementById('privateUserContainer');
-        const userCheckboxList = document.getElementById('userCheckboxList');
-        const targetUidInput = document.getElementById('targetUid');
-
-        // Firestore එකෙන් Users ලා ටික Load කර Checkbox list එක සෑදීම
-        async function fetchAndLoadUsers() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "users"));
-                userCheckboxList.innerHTML = "";
-
-                if (querySnapshot.empty) {
-                    userCheckboxList.innerHTML = "<small class='text-danger'>No users found in database.</small>";
-                    return;
-                }
-
-                querySnapshot.forEach((docSnap) => {
-                    const userData = docSnap.data();
-                    const uid = userData.uid || docSnap.id;
-                    const name = userData.name || "Unknown Student";
-
-                    const checkboxDiv = document.createElement('div');
-                    checkboxDiv.className = 'form-check mb-2';
-                    checkboxDiv.innerHTML = `
-                        <input class="form-check-input user-uid-checkbox" type="checkbox" value="${uid}" id="chk_${uid}">
-                        <label class="form-check-label text-white-50" for="chk_${uid}">
-                            <strong>${uid}</strong> - ${name}
-                        </label>
-                    `;
-                    userCheckboxList.appendChild(checkboxDiv);
-                });
-            } catch (error) {
-                console.error("Error fetching users for list: ", error);
-                userCheckboxList.innerHTML = "<small class='text-danger'>Failed to load users.</small>";
-            }
-        }
-
-        // මුලින්ම Users ලා Load කර තබා ගනී
-        fetchAndLoadUsers();
-
-        // Dropdown එක වෙනස් වන විට Input Field වෙනස් කිරීම
-        targetTypeSelect.addEventListener('change', function() {
-            if (this.value === 'multiple') {
-                userSelectionContainer.classList.remove('d-none');
-                privateUserContainer.classList.add('d-none');
-                targetUidInput.removeAttribute('required');
-            } else if (this.value === 'specific') {
-                privateUserContainer.classList.remove('d-none');
-                targetUidInput.setAttribute('required', 'true');
-                userSelectionContainer.classList.add('d-none');
-                document.querySelectorAll('.user-uid-checkbox').forEach(chk => chk.checked = false);
-            } else {
-                userSelectionContainer.classList.add('d-none');
-                privateUserContainer.classList.add('d-none');
-                targetUidInput.removeAttribute('required');
-                targetUidInput.value = '';
-                document.querySelectorAll('.user-uid-checkbox').forEach(chk => chk.checked = false);
-            }
-        });
-
-        // Form Submission එක හැසිරවීම
-        document.getElementById('notificationForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const submitBtn = document.getElementById('submitBtn');
-            const msgText = document.getElementById('notifMessage').value.trim();
-            const alertType = document.getElementById('notifType').value;
-            const targetType = targetTypeSelect.value;
-
-            if (!msgText) return;
-
-            let targetUids = [];
-
-            if (targetType === 'multiple') {
-                document.querySelectorAll('.user-uid-checkbox:checked').forEach(chk => {
-                    targetUids.push(chk.value);
-                });
-
-                if (targetUids.length === 0) {
-                    Swal.fire({ title: '⚠️ Attention', text: 'කරුණාකර අවම වශයෙන් එක් පරිශීලකයෙක්වත් තෝරන්න.', icon: 'warning', background: '#161b22', color: '#ffffff' });
-                    return;
-                }
-            } else if (targetType === 'specific') {
-                const specificUid = targetUidInput.value.trim();
-                if (!specificUid) return;
-                targetUids.push(specificUid);
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Sending...`;
-
-            try {
-                // 1. සියලු දෙනාටම එකවර යැවීම
-                if (targetType === 'all') {
-                    await addDoc(collection(db, "notifications"), {
-                        userId: "all",
-                        message: msgText,
-                        type: alertType,
-                        isRead: false,
-                        timestamp: serverTimestamp()
-                    });
-                } 
-                // 2. තෝරාගත් පරිශීලකයන්ට හෝ Single Private පරිශීලකයාට වෙන වෙනම යැවීම
-                else {
-                    const promises = targetUids.map(uid => {
-                        return addDoc(collection(db, "notifications"), {
-                            userId: uid,
-                            message: msgText,
-                            type: alertType,
-                            isRead: false,
-                            timestamp: serverTimestamp()
-                        });
-                    });
-                    await Promise.all(promises);
-                }
-
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'පණිවිඩය සාර්ථකව පද්ධතියට ඇතුලත් කරන ලදී.',
-                    icon: 'success',
-                    background: '#161b22',
-                    color: '#fff',
-                    confirmButtonColor: '#00d2ff'
-                });
-
-                document.getElementById('notificationForm').reset();
-                userSelectionContainer.classList.add('d-none');
-                privateUserContainer.classList.add('d-none');
-                targetUidInput.removeAttribute('required');
-
-            } catch (error) {
-                console.error("Error sending notification: ", error);
-                Swal.fire({ title: 'Error!', text: 'මොකක් හරි වැරැද්දක් වුණා. නැවත උත්සාහ කරන්න.', icon: 'error', background: '#161b22', color: '#fff' });
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane me-2"></i> SEND NOTIFICATION`;
-            }
-        });
-    </script>
-    </script>
 </body>
 </html>
