@@ -1,95 +1,438 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A/L Combined Maths Graph Bot</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            display: flex;
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Auth - NEXUS Portal</title>
+   
+   <!-- Bootstrap 5 CDN -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+   <!-- Font Awesome CDN -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <!-- SweetAlert2 CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+   <style>
+      * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+      }
+
+      body {
+         background-color: #ffffff;
+         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         min-height: 100vh;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+
+      .login-container {
+         width: 100%;
+         min-height: 100vh;
+         display: flex;
+         padding: 2rem;
+      }
+
+      /* LEFT SIDE - IMAGE SECTION */
+      .image-section {
+         flex: 1.2;
+         position: relative;
+         border-radius: 24px;
+         overflow: hidden;
+         display: flex;
+      }
+
+      .image-section img {
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         border-radius: 24px;
+      }
+
+      /* RIGHT SIDE - FORM SECTION */
+      .form-section {
+         flex: 1;
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+         padding: 2rem 4rem;
+         background-color: #ffffff;
+      }
+
+      .top-nav {
+         display: flex;
+         justify-content: flex-end;
+      }
+
+      .back-home-link {
+         color: #64748b;
+         text-decoration: none;
+         font-size: 0.95rem;
+         font-weight: 500;
+         transition: color 0.2s;
+      }
+
+      .back-home-link:hover {
+         color: #0f172a;
+      }
+
+      .auth-box {
+         max-width: 420px;
+         width: 100%;
+         margin: 0 auto;
+         text-align: center;
+      }
+
+      /* LOGO CIRCLE */
+      .logo-circle {
+         width: 90px;
+         height: 90px;
+         border: 3px solid #00a8ff;
+         border-radius: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         margin: 0 auto 1.5rem auto;
+      }
+
+      .logo-circle i {
+         font-size: 2.8rem;
+         color: #00a8ff;
+      }
+
+      .brand-title {
+         font-size: 1.75rem;
+         font-weight: 700;
+         color: #0f172a;
+         margin-bottom: 0.3rem;
+      }
+
+      .brand-sub {
+         color: #64748b;
+         font-size: 0.95rem;
+         margin-bottom: 1.5rem;
+      }
+
+      /* TOGGLE TABS (SIGN IN / SIGN UP) */
+      .auth-tabs {
+         display: flex;
+         background-color: #f1f5f9;
+         border-radius: 50px;
+         padding: 4px;
+         margin-bottom: 1.5rem;
+      }
+
+      .tab-btn {
+         flex: 1;
+         padding: 0.6rem;
+         border: none;
+         border-radius: 50px;
+         background: transparent;
+         color: #64748b;
+         font-weight: 600;
+         font-size: 0.95rem;
+         cursor: pointer;
+         transition: all 0.3s ease;
+      }
+
+      .tab-btn.active {
+         background-color: #ffffff;
+         color: #00a8ff;
+         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+
+      /* CUSTOM INPUT FIELDS & BUTTON */
+      .phone-input {
+         width: 100%;
+         padding: 0.8rem 1.2rem;
+         border-radius: 50px;
+         border: 1px solid #e2e8f0;
+         outline: none;
+         font-size: 0.95rem;
+         margin-bottom: 0.85rem;
+         transition: border-color 0.2s;
+      }
+
+      .phone-input:focus {
+         border-color: #00a8ff;
+      }
+
+      .btn-phone {
+         width: 100%;
+         background-color: #00a8ff;
+         border: none;
+         color: #ffffff;
+         font-weight: 600;
+         padding: 0.85rem;
+         border-radius: 50px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 10px;
+         cursor: pointer;
+         box-shadow: 0 2px 8px rgba(0, 168, 255, 0.2);
+         transition: all 0.2s ease;
+         font-size: 1rem;
+         margin-top: 0.5rem;
+      }
+
+      .btn-phone:hover {
+         background-color: #0086cc;
+      }
+
+      .notice-text {
+         color: #94a3b8;
+         font-size: 0.85rem;
+         margin-top: 1.5rem;
+         line-height: 1.5;
+      }
+
+      .footer-contact {
+         text-align: center;
+         color: #64748b;
+         font-size: 0.9rem;
+      }
+
+      .footer-contact strong {
+         color: #0f172a;
+      }
+
+      .d-none {
+         display: none !important;
+      }
+
+      /* RESPONSIVE DESIGN FOR MOBILE */
+      @media (max-width: 992px) {
+         .login-container {
+            padding: 1rem;
             flex-direction: column;
-            align-items: center;
-        }
-        header {
-            background-color: #007bff;
-            color: white;
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .container {
-            max-width: 800px;
-            width: 90%;
-            margin: 30px auto;
-            text-align: center;
-        }
-        .btn-container {
-            margin-bottom: 20px;
-        }
-        .btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 24px;
-            font-size: 16px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.3s;
-            display: inline-block;
-        }
-        .btn:hover {
-            background-color: #218838;
-        }
-        .iframe-container {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-        iframe {
-            width: 100%;
-            height: 600px;
-            border: none;
-        }
-        footer {
-            margin-top: 40px;
-            color: #777;
-            font-size: 14px;
-            padding-bottom: 20px;
-        }
-    </style>
+         }
+
+         .image-section {
+            display: none;
+         }
+
+         .form-section {
+            padding: 2rem 1rem;
+            min-height: 100vh;
+         }
+      }
+   </style>
 </head>
 <body>
 
-    <header>
-        <h1>A/L Combined Mathematics Graph Assistant</h1>
-    </header>
+<div class="login-container">
+   <!-- 1. LEFT IMAGE SECTION -->
+   <div class="image-section">
+      <img src="https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=1200&auto=format&fit=crop" alt="Class Banner">
+   </div>
 
-    <div class="container">
-        <p>ප්‍රස්තාරය ඇඳගැනීම සඳහා පහත ඇති Bot සමඟ Chat කරන්න. (Poe එකෙන් Embed කිරීම Block කර ඇත්නම් බටන් එක ක්ලික් කරන්න)</p>
-        
-        <div class="btn-container">
-            <a href="https://poe.com/botnexus12" target="_blank" class="btn">Open Bot in Full Screen</a>
-        </div>
+   <!-- 2. RIGHT FORM SECTION -->
+   <div class="form-section">
+      
+      <!-- TOP NAVIGATION -->
+      <div class="top-nav">
+         <a href="https://t.me/Nexus_web_update" class="back-home-link" target="_blank">
+            <i class="fas fa-arrow-left me-1"></i> Mani Channel
+         </a>
+      </div>
 
-        <div class="iframe-container">
-            <iframe src="https://poe.com/botnexus12"></iframe>
-        </div>
-    </div>
+      <!-- MIDDLE AUTH BOX -->
+      <div class="auth-box">
+         <!-- LOGO -->
+         <div class="logo-circle">
+            <i class="fas fa-graduation-cap"></i>
+         </div>
 
-    <footer>
-        <p>Created for A/L Combined Maths Students</p>
-    </footer>
+         <!-- HEADING -->
+         <h2 class="brand-title" id="form-title">Sign In to NEXUS</h2>
+         <p class="brand-sub" id="form-sub">Enter your phone number and password to access.</p>
+
+         <!-- SIGN IN / SIGN UP TABS -->
+         <div class="auth-tabs">
+            <button type="button" class="tab-btn active" id="tab-signin">Sign In</button>
+            <button type="button" class="tab-btn" id="tab-signup">Sign Up</button>
+         </div>
+
+         <!-- 1. SIGN IN FORM -->
+         <form id="signin-form">
+            <input type="tel" id="signin-phone" class="phone-input" placeholder="Phone Number (e.g. 0771234567)" required>
+            <input type="password" id="signin-password" class="phone-input" placeholder="Password" required>
+            <button type="submit" class="btn-phone">
+               <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+         </form>
+
+         <!-- 2. SIGN UP FORM (HIDDEN INITIALLY) -->
+         <form id="signup-form" class="d-none">
+            <input type="text" id="signup-name" class="phone-input" placeholder="Full Name" required>
+            <input type="tel" id="signup-phone" class="phone-input" placeholder="Phone Number (e.g. 0771234567)" required>
+            <input type="email" id="signup-email" class="phone-input" placeholder="Gmail Address" required>
+            <input type="password" id="signup-password" class="phone-input" placeholder="Password (Min. 6 chars)" minlength="6" required>
+            <button type="submit" class="btn-phone">
+               <i class="fas fa-user-plus"></i> Create Account
+            </button>
+         </form>
+
+         <!-- BOTTOM NOTICE -->
+         <p class="notice-text">
+            By continuing, you agree to NEXUS Learning Platform's Terms of Service.
+         </p>
+      </div>
+
+      <!-- FOOTER HOTLINE -->
+      <div class="footer-contact">
+         <strong></strong>
+      </div>
+
+   </div>
+</div>
+
+<!-- FIREBASE AUTHENTICATION SCRIPT -->
+<script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+   import { 
+      getAuth, 
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword 
+   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+   import { 
+      getFirestore, 
+      doc, 
+      setDoc, 
+      getDoc 
+   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+   // Firebase Config
+   const firebaseConfig = {
+       apiKey: "AIzaSyCmciwmEbSDgA5PhCY12a_vKqXl4GDBeZ8",
+       authDomain: "school-project-5fe93.firebaseapp.com",
+       projectId: "school-project-5fe93",
+       storageBucket: "school-project-5fe93.firebasestorage.app",
+       messagingSenderId: "548925209782",
+       appId: "1:548925209782:web:cea0aac7d41a510b2fba17",
+       measurementId: "G-5MG8T54708"
+   };
+
+   // Initialize Firebase
+   const app = initializeApp(firebaseConfig);
+   const auth = getAuth(app);
+   const db = getFirestore(app);
+
+   // TAB SWITCHING LOGIC
+   const tabSignIn = document.getElementById('tab-signin');
+   const tabSignUp = document.getElementById('tab-signup');
+   const formSignIn = document.getElementById('signin-form');
+   const formSignUp = document.getElementById('signup-form');
+   const formTitle = document.getElementById('form-title');
+   const formSub = document.getElementById('form-sub');
+
+   tabSignIn.addEventListener('click', () => {
+      tabSignIn.classList.add('active');
+      tabSignUp.classList.remove('active');
+      formSignIn.classList.remove('d-none');
+      formSignUp.classList.add('d-none');
+      formTitle.innerText = "Sign In to NEXUS";
+      formSub.innerText = "Enter your phone number and password to access.";
+   });
+
+   tabSignUp.addEventListener('click', () => {
+      tabSignUp.classList.add('active');
+      tabSignIn.classList.remove('active');
+      formSignUp.classList.remove('d-none');
+      formSignIn.classList.add('d-none');
+      formTitle.innerText = "Create an Account";
+      formSub.innerText = "Fill in your details to register with NEXUS.";
+   });
+
+   // Helper Function to convert Phone Number to dummy email format for Auth
+   // Example: 0771234567 -> 0771234567@nexus.com
+   const phoneToEmail = (phone) => `${phone.replace(/\s+/g, '')}@nexus.com`;
+
+   // ------------------------------------
+   // 1. SIGN UP PROCESS
+   // ------------------------------------
+   formSignUp.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('signup-name').value.trim();
+      const phone = document.getElementById('signup-phone').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+
+      Swal.fire({ title: 'Creating Account...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+         // Create user with phone-based email identifier
+         const authEmail = phoneToEmail(phone);
+         const userCredential = await createUserWithEmailAndPassword(auth, authEmail, password);
+         const uid = userCredential.user.uid;
+
+         // Save complete info in Firestore DB
+         await setDoc(doc(db, "users", uid), {
+            name: name,
+            phone: phone,
+            gmail: email,
+            createdAt: new Date().toISOString()
+         });
+
+         Swal.fire({
+            icon: 'success',
+            title: 'Account Created!',
+            text: 'Welcome to NEXUS Platform!',
+            timer: 1500,
+            showConfirmButton: false
+         }).then(() => {
+            window.location.href = "home.html";
+         });
+
+      } catch (error) {
+         console.error(error);
+         let msg = "Failed to create account.";
+         if (error.code === 'auth/email-already-in-use') {
+            msg = "This phone number is already registered!";
+         }
+         Swal.fire({ icon: 'error', title: 'Sign Up Error', text: msg });
+      }
+   });
+
+   // ------------------------------------
+   // 2. SIGN IN PROCESS
+   // ------------------------------------
+   formSignIn.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const phone = document.getElementById('signin-phone').value.trim();
+      const password = document.getElementById('signin-password').value;
+
+      Swal.fire({ title: 'Signing In...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+         const authEmail = phoneToEmail(phone);
+         await signInWithEmailAndPassword(auth, authEmail, password);
+
+         Swal.fire({
+            icon: 'success',
+            title: 'Welcome Back!',
+            text: 'Sign in successful.',
+            timer: 1500,
+            showConfirmButton: false
+         }).then(() => {
+            window.location.href = "home.html";
+         });
+
+      } catch (error) {
+         console.error(error);
+         Swal.fire({ 
+            icon: 'error', 
+            title: 'Sign In Failed', 
+            text: 'Invalid Phone Number or Password. Please try again!' 
+         });
+      }
+   });
+</script>
 
 </body>
 </html>
