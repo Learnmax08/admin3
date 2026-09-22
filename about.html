@@ -188,10 +188,10 @@
       /* 🎈 CHAT MESSAGE BUBBLE - INCREASED FONT SIZE */
       .msg-bubble {
          max-width: 80%;
-         padding: 1.1rem 1.6rem; /* ටිකක් Padding වැඩි කළා */
+         padding: 1.1rem 1.6rem;
          border-radius: 18px;
-         font-size: 1.35rem; /* 👈 Message Text එක ලොකු කළා (1.1rem -> 1.35rem) */
-         font-weight: 600;  /* 👈 Text එක වඩාත් පැහැදිලි කළා */
+         font-size: 1.35rem;
+         font-weight: 600;
          line-height: 1.5;
          word-break: break-word;
          position: relative;
@@ -200,7 +200,7 @@
       /* 👤 SENDER NAME */
       .sender-name {
          display: block;
-         font-size: 1rem; /* 👈 Sender ගේ නමේ ප්‍රමාණය ලොකු කළා (0.88rem -> 1rem) */
+         font-size: 1rem;
          font-weight: 800;
          margin-bottom: 0.4rem;
       }
@@ -258,7 +258,7 @@
          outline: none;
          background: var(--purple-card);
          color: var(--text-dark);
-         font-size: 1.2rem; /* 👈 Type කරන එකත් ලොකුවට පෙනෙන ලෙස හැදුවා */
+         font-size: 1.2rem;
          font-weight: 600;
       }
 
@@ -317,10 +317,10 @@
 
          .msg-bubble {
             max-width: 88%;
-            font-size: 1.15rem; /* 👈 Mobile වලදීත් Font size එක වැඩි කරලා ඇත */
+            font-size: 1.15rem;
          }
       }
-</style>
+   </style>
 </head>
 <body>
 
@@ -409,10 +409,7 @@
          <span style="font-size: 0.95rem; font-weight: normal; opacity: 0.95;">Public Student Group</span>
       </div>
       <div class="chat-messages" id="chat_messages_area">
-         <div class="msg-bubble msg-admin">
-            <span class="sender-name">👑 System Admin</span>
-            Welcome to the community chat! Messages sent here will display your name to all students.
-         </div>
+         <!-- Chat messages cleared: Clean state ready for new messages -->
       </div>
       <div class="chat-input-area">
          <input type="text" id="chat_user_input" placeholder="Type a message to everyone...">
@@ -436,13 +433,13 @@
    import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
    const firebaseConfig = {
-       apiKey: "AIzaSyCmciwmEbSDgA5PhCY12a_vKqXl4GDBeZ8",
-       authDomain: "school-project-5fe93.firebaseapp.com",
-       projectId: "school-project-5fe93",
-       storageBucket: "school-project-5fe93.firebasestorage.app",
-       messagingSenderId: "548925209782",
-       appId: "1:548925209782:web:cea0aac7d41a510b2fba17",
-       measurementId: "G-5MG8T54708"
+      apiKey: "AIzaSyCmciwmEbSDgA5PhCY12a_vKqXl4GDBeZ8",
+      authDomain: "school-project-5fe93.firebaseapp.com",
+      projectId: "school-project-5fe93",
+      storageBucket: "school-project-5fe93.firebasestorage.app",
+      messagingSenderId: "548925209782",
+      appId: "1:548925209782:web:cea0aac7d41a510b2fba17",
+      measurementId: "G-5MG8T54708"
    };
 
    const app = initializeApp(firebaseConfig);
@@ -452,15 +449,15 @@
    let currentUserName = localStorage.getItem('student_name') || "Student";
 
    const updateUI = (name, avatar) => {
-       const pName = document.getElementById('profile-name');
-       const sName = document.getElementById('sidebar-name');
-       const hAvatar = document.getElementById('header_avatar');
-       const sAvatar = document.getElementById('sidebar_avatar');
+      const pName = document.getElementById('profile-name');
+      const sName = document.getElementById('sidebar-name');
+      const hAvatar = document.getElementById('header_avatar');
+      const sAvatar = document.getElementById('sidebar_avatar');
 
-       if (pName && name) pName.innerText = name;
-       if (sName && name) sName.innerText = name;
-       if (hAvatar && avatar) hAvatar.src = avatar;
-       if (sAvatar && avatar) sAvatar.src = avatar;
+      if (pName && name) pName.innerText = name;
+      if (sName && name) sName.innerText = name;
+      if (hAvatar && avatar) hAvatar.src = avatar;
+      if (sAvatar && avatar) sAvatar.src = avatar;
    };
 
    // Sync from LocalStorage
@@ -470,157 +467,153 @@
 
    // Firebase Auth Sync
    onAuthStateChanged(auth, async (user) => {
-       if (user) {
-           activeUserUid = user.uid;
-           const snap = await getDoc(doc(db, "students", user.uid));
-           if (snap.exists()) {
-               currentUserName = snap.data().fullName || user.displayName || "Student";
-               const avatar = snap.data().avatar || "images/pic-1.jpg";
-               localStorage.setItem('student_name', currentUserName);
-               localStorage.setItem('student_avatar', avatar);
-               updateUI(currentUserName, avatar);
-           }
-       }
-       listenToNotifications(activeUserUid);
-       setupGlobalChat(activeUserUid);
+      if (user) {
+         activeUserUid = user.uid;
+         const snap = await getDoc(doc(db, "students", user.uid));
+         if (snap.exists()) {
+            currentUserName = snap.data().fullName || user.displayName || "Student";
+            const avatar = snap.data().avatar || "images/pic-1.jpg";
+            localStorage.setItem('student_name', currentUserName);
+            localStorage.setItem('student_avatar', avatar);
+            updateUI(currentUserName, avatar);
+         }
+      }
+      listenToNotifications(activeUserUid);
+      setupGlobalChat(activeUserUid);
    });
 
    // Logout Action
    const logoutBtn = document.getElementById('logout-btn');
    if (logoutBtn) {
-       logoutBtn.addEventListener('click', () => {
-           signOut(auth).then(() => {
-               localStorage.clear();
-               window.location.href = "login.html";
-           }).catch(() => {
-               localStorage.clear();
-               window.location.href = "login.html";
-           });
-       });
+      logoutBtn.addEventListener('click', () => {
+         signOut(auth).then(() => {
+            localStorage.clear();
+            window.location.href = "login.html";
+         }).catch(() => {
+            localStorage.clear();
+            window.location.href = "login.html";
+         });
+      });
    }
 
    // 1. System Notifications Listener
    function listenToNotifications(userUid) {
-       const msgText = document.getElementById('admin_message_text');
-       const msgTime = document.getElementById('admin_message_time');
-       const notifBadge = document.getElementById('dashboard_notif_count');
-       const iconBadge = document.getElementById('noti_badge');
+      const msgText = document.getElementById('admin_message_text');
+      const msgTime = document.getElementById('admin_message_time');
+      const notifBadge = document.getElementById('dashboard_notif_count');
+      const iconBadge = document.getElementById('noti_badge');
 
-       const q = query(collection(db, "notifications"), where("userId", "in", [userUid, "all"]));
+      const q = query(collection(db, "notifications"), where("userId", "in", [userUid, "all"]));
 
-       onSnapshot(q, (snapshot) => {
-           if (!snapshot.empty) {
-               let docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-               docs.sort((a, b) => {
-                   const tA = a.timestamp?.toMillis ? a.timestamp.toMillis() : (a.timestamp || 0);
-                   const tB = b.timestamp?.toMillis ? b.timestamp.toMillis() : (b.timestamp || 0);
-                   return tB - tA;
+      onSnapshot(q, (snapshot) => {
+         if (!snapshot.empty) {
+            let docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            docs.sort((a, b) => {
+               const tA = a.timestamp?.toMillis ? a.timestamp.toMillis() : (a.timestamp || 0);
+               const tB = b.timestamp?.toMillis ? b.timestamp.toMillis() : (b.timestamp || 0);
+               return tB - tA;
+            });
+
+            const latest = docs[0];
+            if (msgText) msgText.innerText = latest.message || "No Message Content";
+            
+            if (msgTime) {
+               const timeVal = latest.timestamp?.toDate ? latest.timestamp.toDate() : new Date(latest.timestamp);
+               msgTime.innerHTML = `<i class="far fa-clock"></i> ${timeVal ? timeVal.toLocaleString() : 'Just now'}`;
+            }
+
+            if (notifBadge) {
+               notifBadge.innerText = latest.isRead ? "0 New" : "1 New";
+               notifBadge.style.background = latest.isRead ? "var(--purple-light)" : "var(--purple-main)";
+            }
+
+            if (!latest.isRead) {
+               if (iconBadge) iconBadge.style.display = "block";
+
+               Swal.fire({
+                  title: '📢 System Alert',
+                  text: latest.message,
+                  icon: latest.type || 'info',
+                  background: '#ffffff',
+                  color: '#2e1065',
+                  confirmButtonColor: '#6d28d9'
+               }).then(async (res) => {
+                  if (res.isConfirmed) {
+                     await updateDoc(doc(db, "notifications", latest.id), { isRead: true });
+                  }
                });
-
-               const latest = docs[0];
-               if (msgText) msgText.innerText = latest.message || "No Message Content";
-               
-               if (msgTime) {
-                   const timeVal = latest.timestamp?.toDate ? latest.timestamp.toDate() : new Date(latest.timestamp);
-                   msgTime.innerHTML = `<i class="far fa-clock"></i> ${timeVal ? timeVal.toLocaleString() : 'Just now'}`;
-               }
-
-               if (notifBadge) {
-                   notifBadge.innerText = latest.isRead ? "0 New" : "1 New";
-                   notifBadge.style.background = latest.isRead ? "var(--purple-light)" : "var(--purple-main)";
-               }
-
-               if (!latest.isRead) {
-                   if (iconBadge) iconBadge.style.display = "block";
-
-                   Swal.fire({
-                       title: '📢 System Alert',
-                       text: latest.message,
-                       icon: latest.type || 'info',
-                       background: '#ffffff',
-                       color: '#2e1065',
-                       confirmButtonColor: '#6d28d9'
-                   }).then(async (res) => {
-                       if (res.isConfirmed) {
-                           await updateDoc(doc(db, "notifications", latest.id), { isRead: true });
-                       }
-                   });
-               } else {
-                   if (iconBadge) iconBadge.style.display = "none";
-               }
-           } else {
-               if (msgText) msgText.innerText = "No announcements available.";
-               if (notifBadge) notifBadge.innerText = "0 New";
+            } else {
                if (iconBadge) iconBadge.style.display = "none";
-           }
-       });
+            }
+         } else {
+            if (msgText) msgText.innerText = "No announcements available.";
+            if (notifBadge) notifBadge.innerText = "0 New";
+            if (iconBadge) iconBadge.style.display = "none";
+         }
+      });
    }
 
    // 2. Global Chat Setup
    function setupGlobalChat(userUid) {
-       const sendBtn = document.getElementById('send_msg_btn');
-       const inputField = document.getElementById('chat_user_input');
-       const msgContainer = document.getElementById('chat_messages_area');
+      const sendBtn = document.getElementById('send_msg_btn');
+      const inputField = document.getElementById('chat_user_input');
+      const msgContainer = document.getElementById('chat_messages_area');
 
-       const globalChatRef = collection(db, "chats", "global", "messages");
+      const globalChatRef = collection(db, "chats", "global", "messages");
 
-       async function sendMessage() {
-           const text = inputField.value.trim();
-           if (!text) return;
+      async function sendMessage() {
+         const text = inputField.value.trim();
+         if (!text) return;
 
-           inputField.value = "";
+         inputField.value = "";
 
-           await addDoc(globalChatRef, {
-               sender: "user",
-               senderName: currentUserName,
-               senderId: userUid,
-               message: text,
-               timestamp: serverTimestamp()
-           });
-       }
+         await addDoc(globalChatRef, {
+            sender: "user",
+            senderName: currentUserName,
+            senderId: userUid,
+            message: text,
+            timestamp: serverTimestamp()
+         });
+      }
 
-       sendBtn.onclick = sendMessage;
-       inputField.addEventListener("keypress", (e) => {
-           if (e.key === "Enter") sendMessage();
-       });
+      sendBtn.onclick = sendMessage;
+      inputField.addEventListener("keypress", (e) => {
+         if (e.key === "Enter") sendMessage();
+      });
 
-       const q = query(globalChatRef, orderBy("timestamp", "asc"));
-       onSnapshot(q, (snapshot) => {
-           msgContainer.innerHTML = `
-               <div class="msg-bubble msg-admin">
-                  <span class="sender-name">👑 System Admin</span>
-                  Welcome to the community chat! Messages sent here will display your name to all students.
-               </div>`;
+      const q = query(globalChatRef, orderBy("timestamp", "asc"));
+      onSnapshot(q, (snapshot) => {
+         msgContainer.innerHTML = "";
 
-           snapshot.forEach((doc) => {
-               const data = doc.data();
-               const msgDiv = document.createElement("div");
-               msgDiv.classList.add("msg-bubble");
-               
-               const isMe = data.senderId === userUid;
+         snapshot.forEach((doc) => {
+            const data = doc.data();
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("msg-bubble");
+            
+            const isMe = data.senderId === userUid;
 
-               if (data.sender === "admin") {
-                   msgDiv.classList.add("msg-admin");
-                   msgDiv.innerHTML = `<span class="sender-name">👑 Admin</span>${escapeHTML(data.message)}`;
-               } else if (isMe) {
-                   msgDiv.classList.add("msg-user");
-                   msgDiv.innerHTML = `<span class="sender-name">You</span>${escapeHTML(data.message)}`;
-               } else {
-                   msgDiv.classList.add("msg-other-user");
-                   const nameToDisplay = data.senderName || 'Student';
-                   msgDiv.innerHTML = `<span class="sender-name"><i class="fas fa-user-circle"></i> ${escapeHTML(nameToDisplay)}</span>${escapeHTML(data.message)}`;
-               }
-               
-               msgContainer.appendChild(msgDiv);
-           });
-           msgContainer.scrollTop = msgContainer.scrollHeight;
-       });
+            if (data.sender === "admin") {
+               msgDiv.classList.add("msg-admin");
+               msgDiv.innerHTML = `<span class="sender-name">👑 Admin</span>${escapeHTML(data.message)}`;
+            } else if (isMe) {
+               msgDiv.classList.add("msg-user");
+               msgDiv.innerHTML = `<span class="sender-name">You</span>${escapeHTML(data.message)}`;
+            } else {
+               msgDiv.classList.add("msg-other-user");
+               const nameToDisplay = data.senderName || 'Student';
+               msgDiv.innerHTML = `<span class="sender-name"><i class="fas fa-user-circle"></i> ${escapeHTML(nameToDisplay)}</span>${escapeHTML(data.message)}`;
+            }
+            
+            msgContainer.appendChild(msgDiv);
+         });
+         msgContainer.scrollTop = msgContainer.scrollHeight;
+      });
    }
 
    function escapeHTML(str) {
-       return str.replace(/[&<>'"]/g, 
-           tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-       );
+      return str.replace(/[&<>'"]/g, 
+         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
    }
 </script>
 
